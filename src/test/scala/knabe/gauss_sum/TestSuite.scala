@@ -35,12 +35,24 @@ class TestSuite extends TestProbe(ActorSystem("SumUp"), "TestSuite") with FunSui
     SumupActor.sumInterval(1, 101) shouldBe 5050
     SumupActor.sumInterval(1, 1001) shouldBe 500500
     SumupActor.sumInterval(1, 10001) shouldBe 50005000
+    SumupActor.sumInterval(1, 100001) shouldBe 5000050000L
+    SumupActor.sumInterval(1, 1000001) shouldBe 500000500000L
+    SumupActor.sumInterval(1, 10000001) shouldBe 50000005000000L
   }
 
-  val count: Int = 2000000000
+  val count: Long = 1000000000L //one billion
 
-  /** Computes the sum of numbers 1 until without n by the gauss formula. @see https://de.wikipedia.org/wiki/Gau%C3%9Fsche_Summenformel */
-  private def gaussSum(n: Int): Long = (count - 1L) * count / 2
+  /** Computes the sum of numbers 1 until without n by the Gauss formula. @see https://de.wikipedia.org/wiki/Gau%C3%9Fsche_Summenformel */
+  private def gaussSum(n: Long): Long = (n - 1L) * n / 2L
+
+  test("computeIntensiveIdentity"){
+    var i = 2
+    while(i < Int.MaxValue/2){
+      val identical = SumupActor.computeIntensiveIdentity(i)
+      identical shouldBe i
+      i = i*2 - 1
+    }
+  }
 
   test("sequential sum up") {
     val millis = measureMillis {
@@ -49,6 +61,10 @@ class TestSuite extends TestProbe(ActorSystem("SumUp"), "TestSuite") with FunSui
       }
     }
     println(s"Sequentially elapsed time: $millis millis")
+  }
+
+  test("sleep 10 seconds"){
+    Thread.sleep(10000)
   }
 
   test("parallel sum up") {

@@ -8,12 +8,31 @@ object SumupActor {
   val props = Props[SumupActor]()
 
   /** Returns the sum of the integer numbers including 'from' up to but excluding 'until'. */
-  def sumInterval(from: Int, until: Int): Long = {
+  def sumInterval(from: Long, until: Long): Long = {
     var result: Long = 0
-    for (i <- from until until) {
-      result += i
+    var i: Long = from
+    while (i < until) {
+      result += computeIntensiveIdentity(i)
+      i += 1
     }
     result
+  }
+
+  private def sumOf(accu: Long, n: Long): Long = {
+    var result = accu
+    var i = 0;
+    while(i < n){
+      result += 1
+      i += 1
+    }
+    result
+  }
+
+  /** This identity function for Long values is, by purpose, very compute-intensive. */
+  def computeIntensiveIdentity(n: Long): Long = {
+    val square = n.toDouble * n.toDouble
+    val radix = math.sqrt(square)
+    math.round( radix )
   }
 
 }

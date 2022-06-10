@@ -9,10 +9,10 @@ object ManagerActor {
   def props(mainActorRef: ActorRef) = Props(classOf[ManagerActor], mainActorRef)
 
   /** Indicates a task to sum up the integers in interval [from,until). */
-  case class Interval(from: Int, until: Int)
+  case class Interval(from: Long, until: Long)
 
   /** Holds the result of a sum up task. */
-  case class Result(number: Long)
+  case class Result(number: BigInt)
 
 }
 
@@ -23,7 +23,7 @@ class ManagerActor(mainActorRef: ActorRef) extends Actor with ActorLogging {
 
   private val cores = Runtime.getRuntime().availableProcessors();
 
-  private var total = 0L
+  private var total: BigInt = 0
 
   private var resultCount = 0;
 
